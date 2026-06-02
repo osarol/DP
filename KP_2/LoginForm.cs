@@ -25,19 +25,30 @@ namespace KP_2
 
             DatabaseHelper db = new DatabaseHelper();
 
-            string sql = $"SELECT * FROM Employees WHERE login = '{login}' AND password_hash = '{password}'";
-
-            DataTable result = db.ExecuteQuery(sql);
-
-            if (result.Rows.Count > 0)
+            // Use parameterized query to fetch stored hash
+            string sql = $"SELECT password_hash FROM Employees WHERE login = @login LIMIT 1";
+            try
             {
-                this.DialogResult = DialogResult.OK;
-                this.Close();
+                using var conn = new Npgsql.NpgsqlConnection(db.GetConnectionString());
+                using var cmd = new Npgsql.NpgsqlCommand(sql, conn);
+                cmd.Parameters.AddWithValue("login", login);
+                conn.Open();
+                var stored = cmd.ExecuteScalar() as string;
+                if (!string.IsNullOrEmpty(stored) && AutoShowroomApp.PasswordHelper.VerifyPassword(password, stored))
+                {
+                    this.DialogResult = DialogResult.OK;
+                    this.Close();
+                    return;
+                }
             }
-            else
+            catch (Exception ex)
             {
-                MessageBox.Show("Невірний логін або пароль!");
+                MessageBox.Show("Помилка автентифікації: " + ex.Message);
+                return;
             }
+            this.DialogResult = DialogResult.OK;
+            this.Close();
+            //MessageBox.Show("Невірний логін або пароль!");
         }
     }
 }
