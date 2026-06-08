@@ -25,19 +25,47 @@ namespace KP_2
 
             DatabaseHelper db = new DatabaseHelper();
 
-            string sql = $"SELECT * FROM Employees WHERE login = '{login}' AND password_hash = '{password}'";
-
-            DataTable result = db.ExecuteQuery(sql);
-
-            if (result.Rows.Count > 0)
+            // Use parameterized query to fetch stored hash and role
+            string sql = $"SELECT employee_id, full_name, password_hash, position_id FROM Employees WHERE login = @login LIMIT 1";
+            try
             {
-                this.DialogResult = DialogResult.OK;
-                this.Close();
+                using var conn = new Npgsql.NpgsqlConnection(db.GetConnectionString());
+                using var cmd = new Npgsql.NpgsqlCommand(sql, conn);
+                cmd.Parameters.AddWithValue("login", login);
+                conn.Open();
+                using var rdr = cmd.ExecuteReader();
+                if (rdr.Read())
+                {
+                    var id = rdr.IsDBNull(0) ? -1 : rdr.GetInt32(0);
+                    var fullName = rdr.IsDBNull(1) ? string.Empty : rdr.GetString(1);
+                    var stored = rdr.IsDBNull(2) ? string.Empty : rdr.GetString(2);
+                    var positionId = rdr.IsDBNull(3) ? (int?)null : rdr.GetInt32(3);
+
+                    if (!string.IsNullOrEmpty(stored) && AutoShowroomApp.PasswordHelper.VerifyPassword(password, stored))
+                    {
+                        // Populate session (KP_2.UserSession)
+                        UserSession.IsAuthenticated = true;
+                        UserSession.UserId = id;
+                        UserSession.FullName = fullName;
+
+                        // Grant Admin only to accounts whose login contains 'admin' (case-insensitive)
+                        if (login.IndexOf("admin", StringComparison.OrdinalIgnoreCase) >= 0)
+                            UserSession.Role = UserRole.Admin;
+                        else
+                            UserSession.Role = UserRole.Seller;
+
+                        this.DialogResult = DialogResult.OK;
+                        this.Close();
+                        return;
+                    }
+                }
             }
-            else
+            catch (Exception ex)
             {
-                MessageBox.Show("Невірний логін або пароль!");
+                MessageBox.Show("Помилка автентифікації: " + ex.Message);
+                return;
             }
+            MessageBox.Show("Невірний логін або пароль!");
         }
     }
 }

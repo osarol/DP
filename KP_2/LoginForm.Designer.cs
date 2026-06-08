@@ -50,7 +50,7 @@
             labelPassword.Location = new Point(77, 61);
             labelPassword.Name = "labelPassword";
             labelPassword.Size = new Size(49, 15);
-            labelPassword.TabIndex = 1;
+            labelPassword.TabIndex = 0;
             labelPassword.Text = "Пароль";
             // 
             // btnLogin
@@ -58,7 +58,7 @@
             btnLogin.Location = new Point(133, 117);
             btnLogin.Name = "btnLogin";
             btnLogin.Size = new Size(75, 23);
-            btnLogin.TabIndex = 2;
+            btnLogin.TabIndex = 3;
             btnLogin.Text = "Увійти";
             btnLogin.UseVisualStyleBackColor = true;
             btnLogin.Click += btnLogin_Click;
@@ -69,14 +69,14 @@
             txtPassword.Name = "txtPassword";
             txtPassword.PasswordChar = '*';
             txtPassword.Size = new Size(100, 23);
-            txtPassword.TabIndex = 3;
+            txtPassword.TabIndex = 2;
             // 
             // txtLogin
             // 
             txtLogin.Location = new Point(157, 21);
             txtLogin.Name = "txtLogin";
             txtLogin.Size = new Size(100, 23);
-            txtLogin.TabIndex = 4;
+            txtLogin.TabIndex = 1;
             // 
             // LoginForm
             // 

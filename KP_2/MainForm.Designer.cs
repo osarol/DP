@@ -19,8 +19,9 @@
         {
             menuStrip = new MenuStrip();
             файлToolStripMenuItem = new ToolStripMenuItem();
-            відкритиБазуДанихToolStripMenuItem = new ToolStripMenuItem();
-            додатиАвтомобільToolStripMenuItem = new ToolStripMenuItem();
+            відкритиБДToolStripMenuItem = new ToolStripMenuItem();
+            СтворитиБДToolStripMenuItem = new ToolStripMenuItem();
+            зберегтиБДToolStripMenuItem = new ToolStripMenuItem();
             клієнтToolStripMenuItem = new ToolStripMenuItem();
             даніАвтомобіліToolStripMenuItem = new ToolStripMenuItem();
             даніКлієнтиToolStripMenuItem = new ToolStripMenuItem();
@@ -34,23 +35,24 @@
             даніТипиКузоваToolStripMenuItem = new ToolStripMenuItem();
             додатиToolStripMenuItem = new ToolStripMenuItem();
             автомобільToolStripMenuItem = new ToolStripMenuItem();
-            клієнтаToolStripMenuItem = new ToolStripMenuItem();
             брендToolStripMenuItem = new ToolStripMenuItem();
+            клієнтаToolStripMenuItem = new ToolStripMenuItem();
             постачальникаToolStripMenuItem = new ToolStripMenuItem();
-            редагуванняToolStripMenuItem = new ToolStripMenuItem();
-            видалитиЗаписToolStripMenuItem = new ToolStripMenuItem();
-            пошукToolStripMenuItem = new ToolStripMenuItem();
-            зведеніДаніToolStripMenuItem = new ToolStripMenuItem();
-            звітАвтомобіліToolStripMenuItem = new ToolStripMenuItem();
-            журналПродажівToolStripMenuItem = new ToolStripMenuItem();
-            аналітикаБрендівToolStripMenuItem = new ToolStripMenuItem();
-            dgvMain = new DataGridView();
             поставкуToolStripMenuItem = new ToolStripMenuItem();
             продажToolStripMenuItem = new ToolStripMenuItem();
             посадуToolStripMenuItem = new ToolStripMenuItem();
             працівникаToolStripMenuItem = new ToolStripMenuItem();
             тестдрайвToolStripMenuItem = new ToolStripMenuItem();
             типКузоваToolStripMenuItem = new ToolStripMenuItem();
+            зведеніДаніToolStripMenuItem = new ToolStripMenuItem();
+            звітАвтомобіліToolStripMenuItem = new ToolStripMenuItem();
+            журналПродажівToolStripMenuItem = new ToolStripMenuItem();
+            аналітикаБрендівToolStripMenuItem = new ToolStripMenuItem();
+            редагуванняToolStripMenuItem = new ToolStripMenuItem();
+            видалитиЗаписToolStripMenuItem = new ToolStripMenuItem();
+            пошукToolStripMenuItem = new ToolStripMenuItem();
+            dgvMain = new DataGridView();
+            редагуватиЗаписToolStripMenuItem = new ToolStripMenuItem();
             menuStrip.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dgvMain).BeginInit();
             SuspendLayout();
@@ -66,22 +68,31 @@
             // 
             // файлToolStripMenuItem
             // 
-            файлToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { відкритиБазуДанихToolStripMenuItem, додатиАвтомобільToolStripMenuItem });
+            файлToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { відкритиБДToolStripMenuItem, СтворитиБДToolStripMenuItem, зберегтиБДToolStripMenuItem });
             файлToolStripMenuItem.Name = "файлToolStripMenuItem";
             файлToolStripMenuItem.Size = new Size(48, 20);
             файлToolStripMenuItem.Text = "Файл";
             // 
-            // відкритиБазуДанихToolStripMenuItem
+            // відкритиБДToolStripMenuItem
             // 
-            відкритиБазуДанихToolStripMenuItem.Name = "відкритиБазуДанихToolStripMenuItem";
-            відкритиБазуДанихToolStripMenuItem.Size = new Size(179, 22);
-            відкритиБазуДанихToolStripMenuItem.Text = "Додати клієнта";
+            відкритиБДToolStripMenuItem.Name = "відкритиБДToolStripMenuItem";
+            відкритиБДToolStripMenuItem.Size = new Size(180, 22);
+            відкритиБДToolStripMenuItem.Text = "Відкрити БД";
+            відкритиБДToolStripMenuItem.Click += відкритиБДToolStripMenuItem_Click;
             // 
-            // додатиАвтомобільToolStripMenuItem
+            // СтворитиБДToolStripMenuItem
             // 
-            додатиАвтомобільToolStripMenuItem.Name = "додатиАвтомобільToolStripMenuItem";
-            додатиАвтомобільToolStripMenuItem.Size = new Size(179, 22);
-            додатиАвтомобільToolStripMenuItem.Text = "Додати автомобіль";
+            СтворитиБДToolStripMenuItem.Name = "СтворитиБДToolStripMenuItem";
+            СтворитиБДToolStripMenuItem.Size = new Size(180, 22);
+            СтворитиБДToolStripMenuItem.Text = "Створити БД";
+            СтворитиБДToolStripMenuItem.Click += СтворитиБДToolStripMenuItem_Click;
+            // 
+            // зберегтиБДToolStripMenuItem
+            // 
+            зберегтиБДToolStripMenuItem.Name = "зберегтиБДToolStripMenuItem";
+            зберегтиБДToolStripMenuItem.Size = new Size(180, 22);
+            зберегтиБДToolStripMenuItem.Text = "Зберегти БД";
+            зберегтиБДToolStripMenuItem.Click += зберегтиБДToolStripMenuItem_Click;
             // 
             // клієнтToolStripMenuItem
             // 
@@ -93,70 +104,70 @@
             // даніАвтомобіліToolStripMenuItem
             // 
             даніАвтомобіліToolStripMenuItem.Name = "даніАвтомобіліToolStripMenuItem";
-            даніАвтомобіліToolStripMenuItem.Size = new Size(180, 22);
+            даніАвтомобіліToolStripMenuItem.Size = new Size(160, 22);
             даніАвтомобіліToolStripMenuItem.Text = "Автомобілі";
             даніАвтомобіліToolStripMenuItem.Click += даніАвтомобіліToolStripMenuItem_Click;
             // 
             // даніКлієнтиToolStripMenuItem
             // 
             даніКлієнтиToolStripMenuItem.Name = "даніКлієнтиToolStripMenuItem";
-            даніКлієнтиToolStripMenuItem.Size = new Size(180, 22);
+            даніКлієнтиToolStripMenuItem.Size = new Size(160, 22);
             даніКлієнтиToolStripMenuItem.Text = "Клієнти";
             даніКлієнтиToolStripMenuItem.Click += даніКлієнтиToolStripMenuItem_Click;
             // 
             // даніМаркиToolStripMenuItem
             // 
             даніМаркиToolStripMenuItem.Name = "даніМаркиToolStripMenuItem";
-            даніМаркиToolStripMenuItem.Size = new Size(180, 22);
+            даніМаркиToolStripMenuItem.Size = new Size(160, 22);
             даніМаркиToolStripMenuItem.Text = "Марки";
             даніМаркиToolStripMenuItem.Click += даніМаркиToolStripMenuItem_Click;
             // 
             // даніПосадиToolStripMenuItem
             // 
             даніПосадиToolStripMenuItem.Name = "даніПосадиToolStripMenuItem";
-            даніПосадиToolStripMenuItem.Size = new Size(180, 22);
+            даніПосадиToolStripMenuItem.Size = new Size(160, 22);
             даніПосадиToolStripMenuItem.Text = "Посади";
             даніПосадиToolStripMenuItem.Click += даніПосадиToolStripMenuItem_Click;
             // 
             // даніПоставкиToolStripMenuItem
             // 
             даніПоставкиToolStripMenuItem.Name = "даніПоставкиToolStripMenuItem";
-            даніПоставкиToolStripMenuItem.Size = new Size(180, 22);
+            даніПоставкиToolStripMenuItem.Size = new Size(160, 22);
             даніПоставкиToolStripMenuItem.Text = "Поставки";
             даніПоставкиToolStripMenuItem.Click += даніПоставкиToolStripMenuItem_Click;
             // 
             // ДаніПостачальникиToolStripMenuItem
             // 
             ДаніПостачальникиToolStripMenuItem.Name = "ДаніПостачальникиToolStripMenuItem";
-            ДаніПостачальникиToolStripMenuItem.Size = new Size(180, 22);
+            ДаніПостачальникиToolStripMenuItem.Size = new Size(160, 22);
             ДаніПостачальникиToolStripMenuItem.Text = "Постачальники";
             ДаніПостачальникиToolStripMenuItem.Click += ДаніПостачальникиToolStripMenuItem_Click;
             // 
             // даніОстанніПродажіToolStripMenuItem
             // 
             даніОстанніПродажіToolStripMenuItem.Name = "даніОстанніПродажіToolStripMenuItem";
-            даніОстанніПродажіToolStripMenuItem.Size = new Size(180, 22);
+            даніОстанніПродажіToolStripMenuItem.Size = new Size(160, 22);
             даніОстанніПродажіToolStripMenuItem.Text = "Продажі";
             даніОстанніПродажіToolStripMenuItem.Click += даніОстанніПродажіToolStripMenuItem_Click;
             // 
             // даніСпівробітникиToolStripMenuItem
             // 
             даніСпівробітникиToolStripMenuItem.Name = "даніСпівробітникиToolStripMenuItem";
-            даніСпівробітникиToolStripMenuItem.Size = new Size(180, 22);
+            даніСпівробітникиToolStripMenuItem.Size = new Size(160, 22);
             даніСпівробітникиToolStripMenuItem.Text = "Співробітники";
             даніСпівробітникиToolStripMenuItem.Click += даніСпівробітникиToolStripMenuItem_Click;
             // 
             // даніТестдрайвиToolStripMenuItem
             // 
             даніТестдрайвиToolStripMenuItem.Name = "даніТестдрайвиToolStripMenuItem";
-            даніТестдрайвиToolStripMenuItem.Size = new Size(180, 22);
+            даніТестдрайвиToolStripMenuItem.Size = new Size(160, 22);
             даніТестдрайвиToolStripMenuItem.Text = "Тестдрайви";
             даніТестдрайвиToolStripMenuItem.Click += даніТестдрайвиToolStripMenuItem_Click;
             // 
             // даніТипиКузоваToolStripMenuItem
             // 
             даніТипиКузоваToolStripMenuItem.Name = "даніТипиКузоваToolStripMenuItem";
-            даніТипиКузоваToolStripMenuItem.Size = new Size(180, 22);
+            даніТипиКузоваToolStripMenuItem.Size = new Size(160, 22);
             даніТипиКузоваToolStripMenuItem.Text = "Типи кузова";
             даніТипиКузоваToolStripMenuItem.Click += даніТипиКузоваToolStripMenuItem_Click;
             // 
@@ -170,34 +181,104 @@
             // автомобільToolStripMenuItem
             // 
             автомобільToolStripMenuItem.Name = "автомобільToolStripMenuItem";
-            автомобільToolStripMenuItem.Size = new Size(180, 22);
+            автомобільToolStripMenuItem.Size = new Size(159, 22);
             автомобільToolStripMenuItem.Text = "Автомобіль";
             автомобільToolStripMenuItem.Click += додатиАвтомобільToolStripMenuItem_Click;
-            // 
-            // клієнтаToolStripMenuItem
-            // 
-            клієнтаToolStripMenuItem.Name = "клієнтаToolStripMenuItem";
-            клієнтаToolStripMenuItem.Size = new Size(180, 22);
-            клієнтаToolStripMenuItem.Text = "Клієнта";
-            клієнтаToolStripMenuItem.Click += клієнтаToolStripMenuItem_Click;
             // 
             // брендToolStripMenuItem
             // 
             брендToolStripMenuItem.Name = "брендToolStripMenuItem";
-            брендToolStripMenuItem.Size = new Size(180, 22);
+            брендToolStripMenuItem.Size = new Size(159, 22);
             брендToolStripMenuItem.Text = "Марку";
             брендToolStripMenuItem.Click += додатиБрендToolStripMenuItem_Click;
+            // 
+            // клієнтаToolStripMenuItem
+            // 
+            клієнтаToolStripMenuItem.Name = "клієнтаToolStripMenuItem";
+            клієнтаToolStripMenuItem.Size = new Size(159, 22);
+            клієнтаToolStripMenuItem.Text = "Клієнта";
+            клієнтаToolStripMenuItem.Click += клієнтаToolStripMenuItem_Click;
             // 
             // постачальникаToolStripMenuItem
             // 
             постачальникаToolStripMenuItem.Name = "постачальникаToolStripMenuItem";
-            постачальникаToolStripMenuItem.Size = new Size(180, 22);
+            постачальникаToolStripMenuItem.Size = new Size(159, 22);
             постачальникаToolStripMenuItem.Text = "Постачальника";
             постачальникаToolStripMenuItem.Click += додатиПостачальникаToolStripMenuItem_Click;
             // 
+            // поставкуToolStripMenuItem
+            // 
+            поставкуToolStripMenuItem.Name = "поставкуToolStripMenuItem";
+            поставкуToolStripMenuItem.Size = new Size(159, 22);
+            поставкуToolStripMenuItem.Text = "Поставку";
+            поставкуToolStripMenuItem.Click += поставкуToolStripMenuItem_Click;
+            // 
+            // продажToolStripMenuItem
+            // 
+            продажToolStripMenuItem.Name = "продажToolStripMenuItem";
+            продажToolStripMenuItem.Size = new Size(159, 22);
+            продажToolStripMenuItem.Text = "Продаж";
+            продажToolStripMenuItem.Click += продажToolStripMenuItem_Click;
+            // 
+            // посадуToolStripMenuItem
+            // 
+            посадуToolStripMenuItem.Name = "посадуToolStripMenuItem";
+            посадуToolStripMenuItem.Size = new Size(159, 22);
+            посадуToolStripMenuItem.Text = "Посаду";
+            посадуToolStripMenuItem.Click += посадуToolStripMenuItem_Click;
+            // 
+            // працівникаToolStripMenuItem
+            // 
+            працівникаToolStripMenuItem.Name = "працівникаToolStripMenuItem";
+            працівникаToolStripMenuItem.Size = new Size(159, 22);
+            працівникаToolStripMenuItem.Text = "Працівника";
+            працівникаToolStripMenuItem.Click += працівникаToolStripMenuItem_Click;
+            // 
+            // тестдрайвToolStripMenuItem
+            // 
+            тестдрайвToolStripMenuItem.Name = "тестдрайвToolStripMenuItem";
+            тестдрайвToolStripMenuItem.Size = new Size(159, 22);
+            тестдрайвToolStripMenuItem.Text = "Тестдрайв";
+            тестдрайвToolStripMenuItem.Click += тестдрайвToolStripMenuItem_Click;
+            // 
+            // типКузоваToolStripMenuItem
+            // 
+            типКузоваToolStripMenuItem.Name = "типКузоваToolStripMenuItem";
+            типКузоваToolStripMenuItem.Size = new Size(159, 22);
+            типКузоваToolStripMenuItem.Text = "Тип кузова";
+            типКузоваToolStripMenuItem.Click += типКузоваToolStripMenuItem_Click;
+            // 
+            // зведеніДаніToolStripMenuItem
+            // 
+            зведеніДаніToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { звітАвтомобіліToolStripMenuItem, журналПродажівToolStripMenuItem, аналітикаБрендівToolStripMenuItem });
+            зведеніДаніToolStripMenuItem.Name = "зведеніДаніToolStripMenuItem";
+            зведеніДаніToolStripMenuItem.Size = new Size(85, 20);
+            зведеніДаніToolStripMenuItem.Text = "Зведені дані";
+            // 
+            // звітАвтомобіліToolStripMenuItem
+            // 
+            звітАвтомобіліToolStripMenuItem.Name = "звітАвтомобіліToolStripMenuItem";
+            звітАвтомобіліToolStripMenuItem.Size = new Size(174, 22);
+            звітАвтомобіліToolStripMenuItem.Text = "Звіт автомобілі";
+            звітАвтомобіліToolStripMenuItem.Click += звітАвтомобіліToolStripMenuItem_Click;
+            // 
+            // журналПродажівToolStripMenuItem
+            // 
+            журналПродажівToolStripMenuItem.Name = "журналПродажівToolStripMenuItem";
+            журналПродажівToolStripMenuItem.Size = new Size(174, 22);
+            журналПродажівToolStripMenuItem.Text = "Журнал продажів";
+            журналПродажівToolStripMenuItem.Click += журналПродажівToolStripMenuItem_Click;
+            // 
+            // аналітикаБрендівToolStripMenuItem
+            // 
+            аналітикаБрендівToolStripMenuItem.Name = "аналітикаБрендівToolStripMenuItem";
+            аналітикаБрендівToolStripMenuItem.Size = new Size(174, 22);
+            аналітикаБрендівToolStripMenuItem.Text = "Аналітика брендів";
+            аналітикаБрендівToolStripMenuItem.Click += аналітикаБрендівToolStripMenuItem_Click;
+            // 
             // редагуванняToolStripMenuItem
             // 
-            редагуванняToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { видалитиЗаписToolStripMenuItem, пошукToolStripMenuItem });
+            редагуванняToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { видалитиЗаписToolStripMenuItem, пошукToolStripMenuItem, редагуватиЗаписToolStripMenuItem });
             редагуванняToolStripMenuItem.Name = "редагуванняToolStripMenuItem";
             редагуванняToolStripMenuItem.Size = new Size(87, 20);
             редагуванняToolStripMenuItem.Text = "Редагування";
@@ -216,34 +297,6 @@
             пошукToolStripMenuItem.Text = "Пошук";
             пошукToolStripMenuItem.Click += пошукToolStripMenuItem_Click;
             // 
-            // зведеніДаніToolStripMenuItem
-            // 
-            зведеніДаніToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { звітАвтомобіліToolStripMenuItem, журналПродажівToolStripMenuItem, аналітикаБрендівToolStripMenuItem });
-            зведеніДаніToolStripMenuItem.Name = "зведеніДаніToolStripMenuItem";
-            зведеніДаніToolStripMenuItem.Size = new Size(85, 20);
-            зведеніДаніToolStripMenuItem.Text = "Зведені дані";
-            // 
-            // звітАвтомобіліToolStripMenuItem
-            // 
-            звітАвтомобіліToolStripMenuItem.Name = "звітАвтомобіліToolStripMenuItem";
-            звітАвтомобіліToolStripMenuItem.Size = new Size(180, 22);
-            звітАвтомобіліToolStripMenuItem.Text = "Звіт автомобілі";
-            звітАвтомобіліToolStripMenuItem.Click += звітАвтомобіліToolStripMenuItem_Click;
-            // 
-            // журналПродажівToolStripMenuItem
-            // 
-            журналПродажівToolStripMenuItem.Name = "журналПродажівToolStripMenuItem";
-            журналПродажівToolStripMenuItem.Size = new Size(180, 22);
-            журналПродажівToolStripMenuItem.Text = "Журнал продажів";
-            журналПродажівToolStripMenuItem.Click += журналПродажівToolStripMenuItem_Click;
-            // 
-            // аналітикаБрендівToolStripMenuItem
-            // 
-            аналітикаБрендівToolStripMenuItem.Name = "аналітикаБрендівToolStripMenuItem";
-            аналітикаБрендівToolStripMenuItem.Size = new Size(180, 22);
-            аналітикаБрендівToolStripMenuItem.Text = "Аналітика брендів";
-            аналітикаБрендівToolStripMenuItem.Click += аналітикаБрендівToolStripMenuItem_Click;
-            // 
             // dgvMain
             // 
             dgvMain.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
@@ -255,47 +308,12 @@
             dgvMain.Size = new Size(984, 637);
             dgvMain.TabIndex = 4;
             // 
-            // поставкуToolStripMenuItem
+            // редагуватиЗаписToolStripMenuItem
             // 
-            поставкуToolStripMenuItem.Name = "поставкуToolStripMenuItem";
-            поставкуToolStripMenuItem.Size = new Size(180, 22);
-            поставкуToolStripMenuItem.Text = "Поставку";
-            поставкуToolStripMenuItem.Click += поставкуToolStripMenuItem_Click;
-            // 
-            // продажToolStripMenuItem
-            // 
-            продажToolStripMenuItem.Name = "продажToolStripMenuItem";
-            продажToolStripMenuItem.Size = new Size(180, 22);
-            продажToolStripMenuItem.Text = "Продаж";
-            продажToolStripMenuItem.Click += продажToolStripMenuItem_Click;
-            // 
-            // посадуToolStripMenuItem
-            // 
-            посадуToolStripMenuItem.Name = "посадуToolStripMenuItem";
-            посадуToolStripMenuItem.Size = new Size(180, 22);
-            посадуToolStripMenuItem.Text = "Посаду";
-            посадуToolStripMenuItem.Click += посадуToolStripMenuItem_Click;
-            // 
-            // працівникаToolStripMenuItem
-            // 
-            працівникаToolStripMenuItem.Name = "працівникаToolStripMenuItem";
-            працівникаToolStripMenuItem.Size = new Size(180, 22);
-            працівникаToolStripMenuItem.Text = "Працівника";
-            працівникаToolStripMenuItem.Click += працівникаToolStripMenuItem_Click;
-            // 
-            // тестдрайвToolStripMenuItem
-            // 
-            тестдрайвToolStripMenuItem.Name = "тестдрайвToolStripMenuItem";
-            тестдрайвToolStripMenuItem.Size = new Size(180, 22);
-            тестдрайвToolStripMenuItem.Text = "Тестдрайв";
-            тестдрайвToolStripMenuItem.Click += тестдрайвToolStripMenuItem_Click;
-            // 
-            // типКузоваToolStripMenuItem
-            // 
-            типКузоваToolStripMenuItem.Name = "типКузоваToolStripMenuItem";
-            типКузоваToolStripMenuItem.Size = new Size(180, 22);
-            типКузоваToolStripMenuItem.Text = "Тип кузова";
-            типКузоваToolStripMenuItem.Click += типКузоваToolStripMenuItem_Click;
+            редагуватиЗаписToolStripMenuItem.Name = "редагуватиЗаписToolStripMenuItem";
+            редагуватиЗаписToolStripMenuItem.Size = new Size(180, 22);
+            редагуватиЗаписToolStripMenuItem.Text = "Редагувати запис";
+            редагуватиЗаписToolStripMenuItem.Click += редагуватиЗаписToolStripMenuItem_Click;
             // 
             // MainForm
             // 
@@ -317,9 +335,9 @@
         private MenuStrip menuStrip1;
         private MenuStrip menuStrip;
         private ToolStripMenuItem файлToolStripMenuItem;
-        private ToolStripMenuItem відкритиБазуДанихToolStripMenuItem;
+        private ToolStripMenuItem відкритиБДToolStripMenuItem;
         private ToolStripMenuItem клієнтToolStripMenuItem;
-        private ToolStripMenuItem додатиАвтомобільToolStripMenuItem;
+        private ToolStripMenuItem СтворитиБДToolStripMenuItem;
         private ToolStripMenuItem даніОстанніПродажіToolStripMenuItem;
         private ToolStripMenuItem даніАвтомобіліToolStripMenuItem;
         private ToolStripMenuItem даніКлієнтиToolStripMenuItem;
@@ -349,5 +367,7 @@
         private ToolStripMenuItem працівникаToolStripMenuItem;
         private ToolStripMenuItem тестдрайвToolStripMenuItem;
         private ToolStripMenuItem типКузоваToolStripMenuItem;
+        private ToolStripMenuItem зберегтиБДToolStripMenuItem;
+        private ToolStripMenuItem редагуватиЗаписToolStripMenuItem;
     }
 }

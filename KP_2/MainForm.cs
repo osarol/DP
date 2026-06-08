@@ -13,8 +13,38 @@ namespace KP_2
         public MainForm()
         {
             InitializeComponent();
+
+            // Login is handled in Program.Main; just apply permissions and initial refresh
+            ApplyPermissionsByRole();
             даніАвтомобіліToolStripMenuItem_Click(null, null);
         }
+
+        private void ApplyPermissionsByRole()
+        {
+            // Default: disable some actions for Seller role
+            if (UserSession.Role == UserRole.Seller)
+            {
+                // Sellers can view cars, customers, sales, but cannot manage employees or DB operations
+                try
+                {
+                    відкритиБДToolStripMenuItem.Enabled = false;
+                    працівникаToolStripMenuItem.Enabled = false; // add employee
+                    даніСпівробітникиToolStripMenuItem.Enabled = false; // view employees
+                    видалитиЗаписToolStripMenuItem.Enabled = false; // delete
+                    зведеніДаніToolStripMenuItem.Enabled = false; // reports/analytics
+                    СтворитиБДToolStripMenuItem.Enabled = false;
+                }
+                catch
+                {
+                    // If designer names differ, ignore failures
+                }
+            }
+            else if (UserSession.Role == UserRole.Admin)
+            {
+                // Admin has full access
+            }
+        }
+
         private void додатиБрендToolStripMenuItem_Click(object sender, EventArgs e)
         {
             var fields = new List<FieldConfig>
@@ -106,7 +136,7 @@ namespace KP_2
             DisplayName = "Постачальник",
             DataSourceSql = "SELECT supplier_id as id, company_name as display_name FROM Suppliers"
         },
-        new FieldConfig { ColumnName = "supply_date", DisplayName = "Дата поставки" }, 
+        new FieldConfig { ColumnName = "supply_date", DisplayName = "Дата поставки" },
         new FieldConfig { ColumnName = "purchase_cost", DisplayName = "Вартість закупівлі ($)" }
     };
 
@@ -124,30 +154,30 @@ namespace KP_2
             DataSourceSql = "SELECT car_id as id, model || ' (VIN: ' || vin_code || ')' as display_name " +
                             "FROM Cars WHERE status = 'В наявності' ORDER BY model"
         },
-        
+
         new FieldConfig {
             ColumnName = "customer_id",
             DisplayName = "Клієнт (Покупець)",
             DataSourceSql = "SELECT customer_id as id, last_name || ' ' || first_name as display_name " +
                             "FROM Customers ORDER BY last_name"
         },
-        
+
         new FieldConfig {
             ColumnName = "employee_id",
             DisplayName = "Менеджер з продажу",
             DataSourceSql = "SELECT employee_id as id, full_name as display_name FROM Employees"
         },
-        
+
         new FieldConfig {
             ColumnName = "sale_date",
             DisplayName = "Дата угоди (РРРР-ММ-ДД)"
         },
-        
+
         new FieldConfig {
             ColumnName = "final_price",
             DisplayName = "Фінальна вартість ($)"
         },
-        
+
         new FieldConfig {
             ColumnName = "payment_method",
             DisplayName = "Спосіб оплати (Готівка/Карта/Кредит)"
@@ -250,7 +280,7 @@ namespace KP_2
                 dgvMain.DataSource = dt;
 
                 dgvMain.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
-                dgvMain.AllowUserToAddRows = false; 
+                dgvMain.AllowUserToAddRows = false;
             }
             catch (Exception ex)
             {
@@ -264,11 +294,30 @@ namespace KP_2
             currentPrimaryKey = "test_drive_id";
             currentRefreshAction = () => даніТестдрайвиToolStripMenuItem_Click(null, null);
 
-            string sql = @"SELECT test_drive_id as ""ID"", customer_id as ""ID Клієнта"", 
-                           car_id as ""ID Авто"", employee_id as ""ID Працівника"",
-                           scheduled_at as ""Дата та час"", 
-                           notes as ""Примітки"" 
-                    FROM TestDrives ORDER BY scheduled_at DESC";
+            string sql = @"SELECT 
+                            td.test_drive_id as ""ID"",
+                            c.last_name || ' ' || c.first_name as ""Клієнт"",
+                            b.name || ' ' || car.model as ""Авто"",
+                            e.full_name as ""Працівник"",
+                            td.scheduled_at as ""Дата та час"",
+                            td.notes as ""Примітки""
+                        FROM TestDrives td
+
+                        LEFT JOIN Customers c 
+                            ON td.customer_id = c.customer_id
+
+                        LEFT JOIN Cars car 
+                            ON td.car_id = car.car_id
+
+                        LEFT JOIN Brands b 
+                            ON car.brand_id = b.brand_id
+
+                        LEFT JOIN Employees e 
+                            ON td.employee_id = e.employee_id
+
+                        ORDER BY td.test_drive_id DESC
+                        ";
+
             RefreshData(sql);
         }
 
@@ -278,8 +327,10 @@ namespace KP_2
             currentPrimaryKey = "supplier_id";
             currentRefreshAction = () => ДаніПостачальникиToolStripMenuItem_Click(null, null);
 
-            string sql = @"SELECT supplier_id as ""ID"", company_name as ""Компанія"", 
-                           contact_person as ""Контакт"", phone as ""Телефон"" 
+            string sql = @"SELECT supplier_id as ""ID"",
+                                    company_name as ""Компанія"", 
+                                    contact_person as ""Контактна особа"", 
+                                    phone as ""Телефон"" 
                     FROM Suppliers";
             RefreshData(sql);
         }
@@ -290,8 +341,9 @@ namespace KP_2
             currentPrimaryKey = "position_id";
             currentRefreshAction = () => даніПосадиToolStripMenuItem_Click(null, null);
 
-            string sql = @"SELECT position_id as ""ID"", title as ""Посада"", 
-                           salary_base as ""Оклад"" 
+            string sql = @"SELECT position_id as ""ID"",
+                                    title as ""Посада"", 
+                                    salary_base as ""Оклад"" 
                     FROM Positions";
             RefreshData(sql);
         }
@@ -302,8 +354,9 @@ namespace KP_2
             currentPrimaryKey = "brand_id";
             currentRefreshAction = () => даніМаркиToolStripMenuItem_Click(null, null);
 
-            string sql = @"SELECT brand_id as ""ID"", name as ""Бренд"", 
-                           country as ""Країна"" 
+            string sql = @"SELECT brand_id as ""ID"", 
+                            name as ""Бренд"", 
+                            country as ""Країна"" 
                     FROM Brands ORDER BY name";
             RefreshData(sql);
         }
@@ -314,9 +367,18 @@ namespace KP_2
             currentPrimaryKey = "employee_id";
             currentRefreshAction = () => даніСпівробітникиToolStripMenuItem_Click(null, null);
 
-            string sql = @"SELECT employee_id as ""ID"", full_name as ""ПІБ"", 
-                           position_id as ""ID Посади"", hire_date as ""Дата найму"" 
-                    FROM Employees";
+            string sql = @"SELECT 
+                            e.employee_id as ""ID"",
+                            e.full_name as ""ПІБ"",
+                            p.title as ""Посада"",
+                            e.hire_date as ""Дата найму""
+                        FROM Employees e
+
+                        LEFT JOIN Positions p
+                            ON e.position_id = p.position_id
+
+                        ORDER BY e.employee_id DESC";
+
             RefreshData(sql);
         }
 
@@ -326,8 +388,12 @@ namespace KP_2
             currentPrimaryKey = "customer_id";
             currentRefreshAction = () => даніКлієнтиToolStripMenuItem_Click(null, null);
 
-            string sql = @"SELECT customer_id as ""ID"", first_name as ""Ім'я"", 
-                           last_name as ""Прізвище"", phone as ""Телефон"" 
+            string sql = @"SELECT customer_id as ""ID"", 
+                                    first_name as ""Ім'я"", 
+                                    last_name as ""Прізвище"",
+                                    phone as ""Телефон"",
+                                    email as ""E-mail"",
+                                    address as ""Адреса""
                     FROM Customers";
             RefreshData(sql);
         }
@@ -338,10 +404,27 @@ namespace KP_2
             currentPrimaryKey = "car_id";
             currentRefreshAction = () => даніАвтомобіліToolStripMenuItem_Click(null, null);
 
-            string sql = @"SELECT car_id as ""ID"", brand_id as ""ID Бренду"", 
-                           model as ""Модель"", price as ""Ціна"", 
-                           status as ""Статус"" 
-                    FROM Cars";
+            string sql = @"SELECT 
+                            c.car_id as ""ID"",
+                            b.name as ""Бренд"",
+                            bt.name as ""Тип кузова"",
+                            c.model as ""Модель"",
+                            c.vin_code as ""VIN-код"",
+                            c.year_produced as ""Рік випуску"",
+                            c.price as ""Ціна"",
+                            c.color as ""Колір"",
+                            c.engine_volume as ""Об'єм двигуна"",
+                            c.status as ""Статус""
+                        FROM Cars c
+
+                        LEFT JOIN Brands b
+                            ON c.brand_id = b.brand_id
+
+                        LEFT JOIN BodyTypes bt
+                            ON c.body_type_id = bt.body_type_id
+
+                        ORDER BY c.car_id DESC";
+
             RefreshData(sql);
         }
 
@@ -351,10 +434,31 @@ namespace KP_2
             currentPrimaryKey = "sale_id";
             currentRefreshAction = () => даніОстанніПродажіToolStripMenuItem_Click(null, null);
 
-            string sql = @"SELECT sale_id as ""ID"", sale_date as ""Дата"", 
-                           car_id as ""ID Авто"", customer_id as ""ID Клієнта"", 
-                           final_price as ""Сума"" 
-                    FROM Sales ORDER BY sale_date DESC";
+            string sql = @"SELECT 
+                            s.sale_id as ""ID"",
+                            b.name || ' ' || c.model as ""Авто"",
+                            cu.last_name || ' ' || cu.first_name as ""Клієнт"",
+                            e.full_name as ""Працівник"",
+                            s.sale_date as ""Дата"",
+                            s.final_price as ""Сума"",
+                            s.payment_method as ""Спосіб оплати""
+                        FROM Sales s
+
+                        LEFT JOIN Cars c
+                            ON s.car_id = c.car_id
+
+                        LEFT JOIN Brands b
+                            ON c.brand_id = b.brand_id
+
+                        LEFT JOIN Customers cu
+                            ON s.customer_id = cu.customer_id
+
+                        LEFT JOIN Employees e
+                            ON s.employee_id = e.employee_id
+
+                        ORDER BY s.sale_date DESC
+                        ";
+
             RefreshData(sql);
         }
 
@@ -364,9 +468,26 @@ namespace KP_2
             currentPrimaryKey = "supply_id";
             currentRefreshAction = () => даніПоставкиToolStripMenuItem_Click(null, null);
 
-            string sql = @"SELECT supply_id as ""ID"", car_id as ""ID Авто"", 
-                           supplier_id as ""ID Постачальника"", supply_date as ""Дата"" 
-                    FROM Supplies";
+            string sql = @"SELECT 
+                            s.supply_id as ""ID"",
+                            b.name || ' ' || c.model as ""Авто"",
+                            sup.company_name as ""Постачальник"",
+                            s.supply_date as ""Дата"",
+                            s.purchase_cost as ""Вартість закупівлі""
+                        FROM Supplies s
+
+                        LEFT JOIN Cars c
+                            ON s.car_id = c.car_id
+
+                        LEFT JOIN Brands b
+                            ON c.brand_id = b.brand_id
+
+                        LEFT JOIN Suppliers sup
+                            ON s.supplier_id = sup.supplier_id
+
+                        ORDER BY s.supply_date DESC
+                        ";
+
             RefreshData(sql);
         }
         private void даніТипиКузоваToolStripMenuItem_Click(object sender, EventArgs e)
@@ -431,7 +552,7 @@ namespace KP_2
             if (string.IsNullOrWhiteSpace(searchTerm)) return;
 
             bool found = false;
-            dgvMain.ClearSelection(); 
+            dgvMain.ClearSelection();
 
             foreach (DataGridViewRow row in dgvMain.Rows)
             {
@@ -439,8 +560,8 @@ namespace KP_2
                 {
                     if (cell.Value != null && cell.Value.ToString().Contains(searchTerm, StringComparison.OrdinalIgnoreCase))
                     {
-                        row.Selected = true; 
-                        dgvMain.FirstDisplayedScrollingRowIndex = row.Index; 
+                        row.Selected = true;
+                        dgvMain.FirstDisplayedScrollingRowIndex = row.Index;
                         found = true;
                         break;
                     }
@@ -455,7 +576,7 @@ namespace KP_2
 
         private void звітАвтомобіліToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            currentTableName = ""; 
+            currentTableName = "";
             currentRefreshAction = () => звітАвтомобіліToolStripMenuItem_Click(null, null);
 
             string sql = @"SELECT b.name as ""Марка"", c.model as ""Модель"", 
@@ -501,6 +622,173 @@ namespace KP_2
                     GROUP BY b.name
                     ORDER BY COUNT(c.car_id) DESC";
             RefreshData(sql);
+        }
+
+        private void СтворитиБДToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                string dbName = Interaction.InputBox("Введіть назву нової бази даних:", "Створити БД", "autoshowroom_db");
+                if (string.IsNullOrWhiteSpace(dbName)) return;
+
+                DatabaseHelper db = new DatabaseHelper();
+                if (!db.CreateDatabase(dbName))
+                {
+                    MessageBox.Show("Не вдалося створити базу даних.", "Помилка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+
+                // Запитати чи потрібно виконати SQL-скрипт ініціалізації
+                if (MessageBox.Show("Виконати SQL-скрипт ініціалізації структури БД?", "Ініціалізація", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question) == DialogResult.Yes)
+                {
+                    // Виконати вбудований скрипт
+                    bool ok = db.ExecuteScriptContent(dbName, DatabaseHelper.DefaultSchemaSql);
+                    if (!ok)
+                        MessageBox.Show("Помилка при виконанні вбудованого скрипта.", "Увага", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
+                else if (MessageBox.Show("Виконати скрипт з файлу?", "Ініціалізація", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+                {
+                    using OpenFileDialog ofd = new OpenFileDialog();
+                    ofd.Filter = "SQL files (*.sql)|*.sql|All files (*.*)|*.*";
+                    ofd.Title = "Виберіть SQL-скрипт для виконання";
+                    if (ofd.ShowDialog() == DialogResult.OK)
+                    {
+                        bool ok = db.ExecuteScript(dbName, ofd.FileName);
+                        if (!ok)
+                            MessageBox.Show("Помилка при виконанні скрипта.", "Увага", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    }
+                }
+
+                DatabaseHelper.SetActiveDatabase(dbName);
+                MessageBox.Show($"База даних '{dbName}' успішно створена та обрана.", "Готово", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                currentRefreshAction?.Invoke();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Помилка створення БД: " + ex.Message);
+            }
+        }
+
+        private void відкритиБДToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                string dbName = Interaction.InputBox("Введіть назву бази даних для відкриття:", "Відкрити БД", "autoshowroom_db");
+                if (string.IsNullOrWhiteSpace(dbName)) return;
+
+                DatabaseHelper db = new DatabaseHelper();
+                if (!db.DatabaseExists(dbName))
+                {
+                    MessageBox.Show($"База даних '{dbName}' не знайдена.", "Увага", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
+                if (!db.SetDatabase(dbName))
+                {
+                    MessageBox.Show("Не вдалося підключитись до обраної бази даних.", "Помилка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+
+                // Зберегти як активну базу даних
+                DatabaseHelper.SetActiveDatabase(dbName);
+
+                MessageBox.Show($"База даних '{dbName}' відкрита.", "Готово", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                currentRefreshAction?.Invoke();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Помилка відкриття БД: " + ex.Message);
+            }
+        }
+
+        private void зберегтиБДToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                string activeDb = DatabaseHelper.ActiveDatabase;
+                if (string.IsNullOrWhiteSpace(activeDb))
+                {
+                    MessageBox.Show("Спочатку відкрийте або оберіть базу даних для збереження.", "Увага", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
+                using SaveFileDialog sfd = new SaveFileDialog();
+                sfd.Filter = "SQL files (*.sql)|*.sql|All files (*.*)|*.*";
+                sfd.FileName = activeDb + ".sql";
+                sfd.Title = "Зберегти SQL-експорт бази даних";
+                if (sfd.ShowDialog() != DialogResult.OK) return;
+
+                bool includeData = MessageBox.Show("Експортувати також дані таблиць?", "Експорт даних", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes;
+
+                DatabaseHelper db = new DatabaseHelper();
+                bool ok = db.ExportDatabaseToSql(activeDb, sfd.FileName, includeData);
+                if (ok)
+                {
+                    MessageBox.Show("База даних успішно збережена у файл.", "Готово", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                else
+                {
+                    MessageBox.Show("Не вдалося зберегти базу даних.", "Помилка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Помилка при збереженні БД: " + ex.Message);
+            }
+        }
+
+        private void редагуватиЗаписToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (dgvMain.CurrentRow == null)
+                {
+                    MessageBox.Show("Виберіть рядок у таблиці для редагування.");
+                    return;
+                }
+
+                if (string.IsNullOrEmpty(currentTableName) || string.IsNullOrEmpty(currentPrimaryKey))
+                {
+                    MessageBox.Show("Спочатку виберіть розділ (наприклад, Автомобілі) у меню.");
+                    return;
+                }
+
+                string idValue = dgvMain.CurrentRow.Cells[0].Value.ToString();
+
+                DatabaseHelper db = new DatabaseHelper();
+                string sql = $"SELECT * FROM {currentTableName} WHERE {currentPrimaryKey} = {idValue}";
+                DataTable dt = db.ExecuteQuery(sql);
+                if (dt.Rows.Count == 0)
+                {
+                    MessageBox.Show("Запис не знайдено.");
+                    return;
+                }
+
+                var row = dt.Rows[0];
+
+                // Build field configs (exclude primary key)
+                var fields = new List<FieldConfig>();
+                var initialValues = new Dictionary<string, string>();
+                foreach (DataColumn col in dt.Columns)
+                {
+                    string colName = col.ColumnName;
+                    if (string.Equals(colName, currentPrimaryKey, StringComparison.OrdinalIgnoreCase)) continue;
+
+                    fields.Add(new FieldConfig { ColumnName = colName, DisplayName = colName });
+                    var val = row[col] == DBNull.Value ? "" : row[col].ToString();
+                    initialValues[colName] = val;
+                }
+
+                AddForm form = new AddForm("Редагувати запис", currentTableName, fields, initialValues, currentPrimaryKey, idValue);
+                if (form.ShowDialog() == DialogResult.OK)
+                {
+                    currentRefreshAction?.Invoke();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Помилка редагування запису: " + ex.Message);
+            }
         }
     }
 }
