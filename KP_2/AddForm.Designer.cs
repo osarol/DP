@@ -30,7 +30,6 @@
         {
             flowLayoutPanel = new FlowLayoutPanel();
             btnSave = new Button();
-            btnCancel = new Button();
             SuspendLayout();
             // 
             // flowLayoutPanel
@@ -77,6 +76,5 @@
 
         private FlowLayoutPanel flowLayoutPanel;
         private Button btnSave;
-        private Button btnCancel;
     }
 }
