@@ -25,20 +25,39 @@ namespace KP_2
 
             DatabaseHelper db = new DatabaseHelper();
 
-            // Use parameterized query to fetch stored hash
-            string sql = $"SELECT password_hash FROM Employees WHERE login = @login LIMIT 1";
+            // Use parameterized query to fetch stored hash and role
+            string sql = $"SELECT employee_id, full_name, password_hash, position_id FROM Employees WHERE login = @login LIMIT 1";
             try
             {
                 using var conn = new Npgsql.NpgsqlConnection(db.GetConnectionString());
                 using var cmd = new Npgsql.NpgsqlCommand(sql, conn);
                 cmd.Parameters.AddWithValue("login", login);
                 conn.Open();
-                var stored = cmd.ExecuteScalar() as string;
-                if (!string.IsNullOrEmpty(stored) && AutoShowroomApp.PasswordHelper.VerifyPassword(password, stored))
+                using var rdr = cmd.ExecuteReader();
+                if (rdr.Read())
                 {
-                    this.DialogResult = DialogResult.OK;
-                    this.Close();
-                    return;
+                    var id = rdr.IsDBNull(0) ? -1 : rdr.GetInt32(0);
+                    var fullName = rdr.IsDBNull(1) ? string.Empty : rdr.GetString(1);
+                    var stored = rdr.IsDBNull(2) ? string.Empty : rdr.GetString(2);
+                    var positionId = rdr.IsDBNull(3) ? (int?)null : rdr.GetInt32(3);
+
+                    if (!string.IsNullOrEmpty(stored) && AutoShowroomApp.PasswordHelper.VerifyPassword(password, stored))
+                    {
+                        // Populate session (KP_2.UserSession)
+                        UserSession.IsAuthenticated = true;
+                        UserSession.UserId = id;
+                        UserSession.FullName = fullName;
+
+                        // Grant Admin only to accounts whose login contains 'admin' (case-insensitive)
+                        if (login.IndexOf("admin", StringComparison.OrdinalIgnoreCase) >= 0)
+                            UserSession.Role = UserRole.Admin;
+                        else
+                            UserSession.Role = UserRole.Seller;
+
+                        this.DialogResult = DialogResult.OK;
+                        this.Close();
+                        return;
+                    }
                 }
             }
             catch (Exception ex)
@@ -46,9 +65,7 @@ namespace KP_2
                 MessageBox.Show("Помилка автентифікації: " + ex.Message);
                 return;
             }
-            this.DialogResult = DialogResult.OK;
-            this.Close();
-            //MessageBox.Show("Невірний логін або пароль!");
+            MessageBox.Show("Невірний логін або пароль!");
         }
     }
 }

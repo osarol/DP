@@ -13,8 +13,38 @@ namespace KP_2
         public MainForm()
         {
             InitializeComponent();
+
+            // Login is handled in Program.Main; just apply permissions and initial refresh
+            ApplyPermissionsByRole();
             äàí³Àâòîìîá³ë³ToolStripMenuItem_Click(null, null);
         }
+
+        private void ApplyPermissionsByRole()
+        {
+            // Default: disable some actions for Seller role
+            if (UserSession.Role == UserRole.Seller)
+            {
+                // Sellers can view cars, customers, sales, but cannot manage employees or DB operations
+                try
+                {
+                    â³äêğèòèÁÄToolStripMenuItem.Enabled = false;
+                    ïğàö³âíèêàToolStripMenuItem.Enabled = false; // add employee
+                    äàí³Ñï³âğîá³òíèêèToolStripMenuItem.Enabled = false; // view employees
+                    âèäàëèòèÇàïèñToolStripMenuItem.Enabled = false; // delete
+                    çâåäåí³Äàí³ToolStripMenuItem.Enabled = false; // reports/analytics
+                    ÑòâîğèòèÁÄToolStripMenuItem.Enabled = false;
+                }
+                catch
+                {
+                    // If designer names differ, ignore failures
+                }
+            }
+            else if (UserSession.Role == UserRole.Admin)
+            {
+                // Admin has full access
+            }
+        }
+
         private void äîäàòèÁğåíäToolStripMenuItem_Click(object sender, EventArgs e)
         {
             var fields = new List<FieldConfig>

@@ -258,6 +258,62 @@ CREATE TABLE Sales (
     final_price NUMERIC(12, 2) NOT NULL,
     payment_method VARCHAR(30)
 );
+
+CREATE OR REPLACE FUNCTION update_car_status_after_sale()
+RETURNS TRIGGER AS $$
+BEGIN
+    UPDATE Cars
+    SET status = 'Продано'
+    WHERE car_id = NEW.car_id;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+-- 2. Створюємо тригер, який викликає цю функцію
+CREATE TRIGGER trg_after_sale_insert
+AFTER INSERT ON Sales
+FOR EACH ROW
+EXECUTE FUNCTION update_car_status_after_sale();
+
+CREATE INDEX idx_cars_model ON Cars(model);
+CREATE INDEX idx_customers_phone ON Customers(phone);
+CREATE INDEX idx_sales_date ON Sales(sale_date);
+
+CREATE OR REPLACE VIEW vw_cars_report AS
+SELECT
+    b.name AS ""Марка авто"",
+    c.model AS ""Модель авто"",
+    bt.name AS ""Тип Кузову"",
+    c.year_produced AS ""Рік випуску"",
+    c.price AS ""Ціна"",
+    c.color AS ""Колір"",
+    c.status AS ""Статус""
+FROM Cars c
+LEFT JOIN Brands b ON c.brand_id = b.brand_id
+LEFT JOIN BodyTypes bt ON c.body_type_id = bt.body_type_id;
+
+CREATE OR REPLACE VIEW vw_sales_journal AS
+SELECT
+    s.sale_date AS ""Дата продажу"",
+    cust.last_name || ' ' || cust.first_name AS ""Клієнт"",
+    b.name || ' ' || c.model AS ""Автомобіль"",
+    s.final_price AS ""Сума угоди"",
+    emp.full_name AS ""Менеджер"", -- Оскільки в Employees вже зберігається full_name
+    s.payment_method AS ""Метод оплати""
+FROM Sales s
+LEFT JOIN Cars c ON s.car_id = c.car_id
+LEFT JOIN Brands b ON c.brand_id = b.brand_id
+LEFT JOIN Customers cust ON s.customer_id = cust.customer_id
+LEFT JOIN Employees emp ON s.employee_id = emp.employee_id;
+
+CREATE OR REPLACE VIEW vw_brand_analytics AS
+SELECT
+    b.name AS ""Бренд"",
+    COUNT(c.car_id) AS ""Кількість авто"",
+    SUM(c.price) AS ""Загальна вартість""
+FROM Brands b
+LEFT JOIN Cars c ON b.brand_id = c.brand_id
+GROUP BY b.brand_id, b.name;
 ";
 
         // Виконати SQL-скрипт, переданий як рядок
